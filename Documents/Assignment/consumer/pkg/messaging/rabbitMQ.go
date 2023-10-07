@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/anushka/consumer/pkg/imageUtils"
+
 	"github.com/streadway/amqp"
 )
 
@@ -47,7 +49,13 @@ func ConnectToRabbitMQ() (int, error) {
 			}
 
 			log.Printf("Received a message: %d", productID)
-
+			//download image
+			resp, err := imageUtils.DownloadAndCompressProductImages(productID)
+			if err != nil {
+				log.Printf("image successfully compressed and saved")
+			}
+			log.Printf("Response: %s", resp)
+			//todo handle error here
 			err = d.Ack(false)
 			if err != nil {
 				log.Printf("Error acknowledging message: %s", err)

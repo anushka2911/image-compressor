@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/anushka/producer/pkg/config"
@@ -61,9 +62,28 @@ func GetProductId() (int, error) {
 	var product Product
 	if err := db.Last(&product).Error; err != nil {
 		fmt.Println("Error in fetching product id")
-		return 0, err
+		return 0, err // todo handle if 0 is returned
 	}
 
 	fmt.Printf("Product ID successfully retrived: %d", product.ID)
 	return product.ID, nil
+}
+
+func GetProductImageByProductID(productID int) (string, error) {
+	db := config.GetDB()
+
+	var product Product
+	err := db.Model(&Product{}).
+		Select("product_images").
+		Where("id = ?", productID).
+		Scan(&product).
+		Error
+
+	if err != nil {
+		// todo Handle errors appropriately if 0 is returned
+		log.Println("Error retrieving product image:", err)
+		return "", err
+	}
+
+	return product.ProductImages, nil
 }

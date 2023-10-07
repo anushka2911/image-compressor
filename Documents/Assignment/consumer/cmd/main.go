@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	// "github.com/anushka/consumer/pkg/imageUtils"
 	"github.com/anushka/consumer/pkg/messaging"
 )
 
@@ -17,7 +18,5 @@ func main() {
 		fmt.Println("Error: Product ID is 0")
 		return
 	}
-
-	fmt.Println("Successfully received product ID:", productID)
 
 }
