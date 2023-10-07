@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/anushka/producer/pkg/config"
@@ -53,4 +54,16 @@ func CreateProduct(userID int, productName, productDescription string, productIm
 	}
 
 	return product, nil
+}
+
+func GetProductId() (int, error) {
+	db := config.GetDB()
+	var product Product
+	if err := db.Last(&product).Error; err != nil {
+		fmt.Println("Error in fetching product id")
+		return 0, err
+	}
+
+	fmt.Printf("Product ID successfully retrived: %d", product.ID)
+	return product.ID, nil
 }
