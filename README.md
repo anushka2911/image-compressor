@@ -1,7 +1,5 @@
 # image-compressor
 
-# image_compressor_golang
-
 # Project Setup Guide
 
 This repository contains a Go project with RabbitMQ integration, utilizing Gorilla Mux for routing, Gorm for database operations, and Logrus for logging,nfnt/resize for image compressing
