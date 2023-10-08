@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func downloadImage(imgURL string) (image.Image, error) {
+func DownloadImage(imgURL string) (image.Image, error) {
 
 	resp, err := http.Get(imgURL)
 	if err != nil {
@@ -35,7 +35,7 @@ func downloadImage(imgURL string) (image.Image, error) {
 	return img, nil
 }
 
-func resizeAndCompressImage(img image.Image, quality int) ([]byte, error) {
+func ResizeAndCompressImage(img image.Image, quality int) ([]byte, error) {
 	imgResized := resize.Resize(1024, 0, img, resize.Lanczos3)
 
 	buffer := new(strings.Builder)
@@ -47,7 +47,7 @@ func resizeAndCompressImage(img image.Image, quality int) ([]byte, error) {
 	return []byte(buffer.String()), nil
 }
 
-func saveImageToLocal(filename string, data []byte, dir string) error {
+func SaveImageToLocal(filename string, data []byte, dir string) error {
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		return fmt.Errorf("failed to create directory: %v", err)
@@ -77,18 +77,18 @@ func DownloadAndCompressProductImages(productID int, quality int) error {
 
 	for i, imgURL := range images {
 
-		img, err := downloadImage(imgURL)
+		img, err := DownloadImage(imgURL)
 		if err != nil {
 			return err
 		}
 
-		compressedImage, err := resizeAndCompressImage(img, quality)
+		compressedImage, err := ResizeAndCompressImage(img, quality)
 		if err != nil {
 			return err
 		}
 
 		filename := fmt.Sprintf("compressed_image_%d_%d.jpg", productID, i+1)
-		err = saveImageToLocal(filename, compressedImage, "compressedImages")
+		err = SaveImageToLocal(filename, compressedImage, "compressedImages")
 		if err != nil {
 			return fmt.Errorf("failed to save compressed image to file: %v", err)
 		}
