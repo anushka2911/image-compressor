@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS Users (
 
 INSERT INTO Users (id, name, mobile, latitude, longitude)
 VALUES
-    (1, 'Aarav Patel', '1234567890', 37.7749, -122.4194),
-    (2, 'Ananya Sharma', '0987654321', 40.7128, -74.0060),
+    (1, 'Aarav Patel', '1234567890', 37.7749, 122.4194),
+    (2, 'Ananya Sharma', '0987654321', 40.7128, 74.0060),
     (3, 'Ravi Kumar', '9876543210', 28.6139, 77.2090),
     (4, 'Sunita Gupta', '8765432109', 19.0760, 72.8777),
     (5, 'Amit Singh', '7654321098', 12.9716, 77.5946),

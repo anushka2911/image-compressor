@@ -39,7 +39,7 @@ func TestGetProductId(t *testing.T) {
 }
 
 func TestGetProductImagesByProductID(t *testing.T) {
-	images, err := GetProductImagesByProductID(50)
+	images, err := GetProductImagesByProductID(7)
 	if err != nil {
 		t.Errorf("Error getting product images: %s", err.Error())
 	}
@@ -69,7 +69,7 @@ func BenchmarkGetProductId(b *testing.B) {
 
 func BenchmarkGetProductImagesByProductID(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_, err := GetProductImagesByProductID(50)
+		_, err := GetProductImagesByProductID(7)
 		if err != nil {
 			b.Errorf("Error getting product images: %s", err.Error())
 		}
