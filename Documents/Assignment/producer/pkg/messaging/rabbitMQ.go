@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	queueName = "processImageQueue"
+	rabbitMQURL = "amqp://guest:guest@localhost:5672/"
+	queueName   = "processImageQueue"
 )
 
 func ConnectToRabbitMQ(productID int) error {
-	connection, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	connection, err := amqp.Dial(rabbitMQURL)
 	if err != nil {
 		return fmt.Errorf("failed to connect to RabbitMQ: %v", err)
 	}

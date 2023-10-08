@@ -14,15 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func downloadImage(productID int) (image.Image, error) {
-	imgURL, err := models.GetProductImageByProductID(productID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to retrieve image from db: %v", err)
-	}
-
-	if imgURL == "" {
-		return nil, fmt.Errorf("no image found for product ID: %d", productID)
-	}
+func downloadImage(imgURL string) (image.Image, error) {
 
 	resp, err := http.Get(imgURL)
 	if err != nil {
@@ -78,20 +70,27 @@ func saveImageToLocal(filename string, data []byte, dir string) error {
 }
 
 func DownloadAndCompressProductImages(productID int, quality int) error {
-	img, err := downloadImage(productID)
+	images, err := models.GetProductImagesByProductID(productID)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to get product images from db: %v", err)
 	}
+	for i, imgURL := range images {
 
-	compressedImage, err := resizeAndCompressImage(img, quality)
-	if err != nil {
-		return err
-	}
+		img, err := downloadImage(imgURL)
+		if err != nil {
+			return err
+		}
 
-	filename := fmt.Sprintf("compressed_image_%d.jpg", productID)
-	err = saveImageToLocal(filename, compressedImage, "compressedImages")
-	if err != nil {
-		return fmt.Errorf("failed to save compressed image to file: %v", err)
+		compressedImage, err := resizeAndCompressImage(img, quality)
+		if err != nil {
+			return err
+		}
+
+		filename := fmt.Sprintf("compressed_image_%d_%d.jpg", productID, i+1)
+		err = saveImageToLocal(filename, compressedImage, "compressedImages")
+		if err != nil {
+			return fmt.Errorf("failed to save compressed image to file: %v", err)
+		}
 	}
 
 	return nil

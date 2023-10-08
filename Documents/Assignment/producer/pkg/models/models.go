@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/anushka/producer/pkg/config"
@@ -69,9 +70,9 @@ func GetProductId() (int, error) {
 	return product.ID, nil
 }
 
-func GetProductImageByProductID(productID int) (string, error) {
+func GetProductImagesByProductID(productID int) ([]string, error) {
 	db := config.GetDB()
-
+	var images []string
 	var product Product
 	err := db.Model(&Product{}).
 		Select("product_images").
@@ -82,8 +83,13 @@ func GetProductImageByProductID(productID int) (string, error) {
 	if err != nil {
 		// todo Handle errors appropriately if 0 is returned
 		log.Println("Error retrieving product image:", err)
-		return "", err
+		return images, err
+	}
+	imageURLs := strings.Split(product.ProductImages, ",")
+
+	for _, imageURL := range imageURLs {
+		images = append(images, strings.TrimSpace(imageURL))
 	}
 
-	return product.ProductImages, nil
+	return images, nil
 }
