@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -63,10 +62,9 @@ func GetProductId() (int, error) {
 	var product Product
 	if err := db.Last(&product).Error; err != nil {
 		fmt.Println("Error in fetching product id")
-		return 0, err // todo handle if 0 is returned
+		return 0, err
 	}
 
-	fmt.Printf("Product ID successfully retrived: %d", product.ID)
 	return product.ID, nil
 }
 
@@ -81,12 +79,10 @@ func GetProductImagesByProductID(productID int) ([]string, error) {
 		Error
 
 	if err != nil {
-		// todo Handle errors appropriately if 0 is returned
-		log.Println("Error retrieving product image:", err)
-		return images, err
+		return images, fmt.Errorf("failed to get product images from db: %v", err)
 	}
-	imageURLs := strings.Split(product.ProductImages, ",")
 
+	imageURLs := strings.Split(product.ProductImages, ",")
 	for _, imageURL := range imageURLs {
 		images = append(images, strings.TrimSpace(imageURL))
 	}

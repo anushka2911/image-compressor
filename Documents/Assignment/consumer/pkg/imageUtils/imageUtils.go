@@ -74,6 +74,7 @@ func DownloadAndCompressProductImages(productID int, quality int) error {
 	if err != nil {
 		return fmt.Errorf("failed to get product images from db: %v", err)
 	}
+
 	for i, imgURL := range images {
 
 		img, err := downloadImage(imgURL)

@@ -43,6 +43,10 @@ func CreateProduct(response http.ResponseWriter, request *http.Request) {
 		respondWithInternalError(response, "Error getting product id")
 		return
 	}
+	if productID == 0 {
+		respondWithInternalError(response, "Error getting product id")
+		return
+	}
 
 	err = messaging.ConnectToRabbitMQ(productID)
 	if err != nil {
