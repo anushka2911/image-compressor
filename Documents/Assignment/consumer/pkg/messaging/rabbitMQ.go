@@ -53,7 +53,7 @@ func ConnectToRabbitMQ() error {
 			}
 
 			log.Printf("Received ProductID: %d", productID)
-			err = imageUtils.DownloadAndCompressProductImages(productID, imageQuality)
+			err = imageUtils.CompressAndUpdateImagePathInDB(productID, imageQuality)
 			if err != nil {
 				log.Printf("image processing failed: %s", err)
 			}

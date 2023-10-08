@@ -47,29 +47,29 @@ func ResizeAndCompressImage(img image.Image, quality int) ([]byte, error) {
 	return []byte(buffer.String()), nil
 }
 
-func SaveImageToLocal(filename string, data []byte, dir string) error {
+func SaveImageToLocal(filename string, data []byte, dir string) (string, error) {
 	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("failed to create directory: %v", err)
+		return "", fmt.Errorf("failed to create directory: %v", err)
 	}
 
 	filePath := filepath.Join(dir, filename)
 	f, err := os.Create(filePath)
 	if err != nil {
-		return fmt.Errorf("failed to create image file: %v", err)
+		return "", fmt.Errorf("failed to create image file: %v", err)
 	}
 	defer f.Close()
 
 	_, err = f.Write(data)
 	if err != nil {
-		return fmt.Errorf("failed to write data to image file: %v", err)
+		return "", fmt.Errorf("failed to write data to image file: %v", err)
 	}
 
 	logrus.Infof("Image saved to file %s", filePath)
-	return nil
+	return filePath, nil
 }
 
-func DownloadAndCompressProductImages(productID int, quality int) error {
+func CompressAndUpdateImagePathInDB(productID int, quality int) error {
 	images, err := models.GetProductImagesByProductID(productID)
 	if err != nil {
 		return fmt.Errorf("failed to get product images from db: %v", err)
@@ -88,10 +88,16 @@ func DownloadAndCompressProductImages(productID int, quality int) error {
 		}
 
 		filename := fmt.Sprintf("compressed_image_%d_%d.jpg", productID, i+1)
-		err = SaveImageToLocal(filename, compressedImage, "compressedImages")
+		filepath, err := SaveImageToLocal(filename, compressedImage, "compressedImages")
 		if err != nil {
 			return fmt.Errorf("failed to save compressed image to file: %v", err)
 		}
+
+		err = models.UpdateProductImage(productID, filepath)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	return nil

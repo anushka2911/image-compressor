@@ -89,3 +89,17 @@ func GetProductImagesByProductID(productID int) ([]string, error) {
 
 	return images, nil
 }
+
+func UpdateProductImage(productID int, compressedProductImages string) error {
+	db := config.GetDB()
+	err := db.Model(&Product{}).
+		Where("id = ?", productID).
+		Update("compressed_product_images", compressedProductImages).
+		Error
+
+	if err != nil {
+		return fmt.Errorf("failed to update product image in db: %v", err)
+	}
+
+	return nil
+}

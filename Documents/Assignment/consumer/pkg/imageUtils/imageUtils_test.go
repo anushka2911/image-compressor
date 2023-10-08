@@ -49,7 +49,7 @@ func BenchmarkSaveImageToLocal(b *testing.B) {
 	b.ReportAllocs()
 
 	for i := 0; i < b.N; i++ {
-		err := imageUtils.SaveImageToLocal("test_image.jpg", compressedImage, "test_dir")
+		_, err := imageUtils.SaveImageToLocal("test_image.jpg", compressedImage, "test_dir")
 		if err != nil {
 			b.Fatalf("Error saving image to local: %v", err)
 		}
